@@ -22,6 +22,7 @@ const typeDefs = gql`
     _id: ID
     listName: String
     createdAt: String
+    firstName: String
     itemsCount: Int
     items: [Item]
   }

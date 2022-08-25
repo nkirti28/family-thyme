@@ -3,7 +3,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 // TODO: move to env
-// const secret = 'mysecretsshhhhh';
+const secret = 'mysecretsshhhhh';
 const expiration = '2d';
 
 // middleware

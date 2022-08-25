@@ -34,8 +34,17 @@ export const QUERY_ME = gql`
   }
 `;
 
+// export const QUERY_LISTS = gql`
+//   query Lists($firstName: String!) {
+//     lists(firstName: $firstName) {
+//       _id
+//       listName
+//     }
+//   }
+// `;
+
 export const QUERY_LISTS = gql`
-  query lists($firstName: String) {
+  query lists($firstName: String!) {
     lists(firstName: $firstName) {
       _id
       listName

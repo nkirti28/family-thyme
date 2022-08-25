@@ -18,4 +18,22 @@ const Lists = () => {
   );
 };
 
-export default Lists;
+ export default Lists;
+
+// const Lists = () => {
+//   // use useQuery hook to make query request
+//   const { loading, data } = useQuery(QUERY_LISTS);
+
+//   const lists = data?.lists || [];
+//   console.log(lists);
+
+//   return (
+//     <main>
+//       <div className="flex-row justify-space-between">
+//         <div className="col-12 mb-3">{lists}</div>
+//       </div>
+//     </main>
+//   );
+// };
+
+// export default Lists;
