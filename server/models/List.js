@@ -15,7 +15,9 @@ const listSchema = new Schema(
       default: Date.now,
       get: (timestamp) => dateFormat(timestamp),
     },
-  
+    firstName: {
+      type: String,
+    },
     items: [itemSchema],
   },
   {

@@ -1,11 +1,11 @@
-const { User, Event, List, Item } = require('../models');
-const { GraphQLScalarType, Kind } = require('graphql');
-const { AuthenticationError } = require('apollo-server-express');
-const { signToken } = require('../utils/auth');
+const { User, Event, List, Item } = require("../models");
+const { GraphQLScalarType, Kind } = require("graphql");
+const { AuthenticationError } = require("apollo-server-express");
+const { signToken } = require("../utils/auth");
 
 const dateScalar = new GraphQLScalarType({
-  name: 'Date',
-  description: 'Date custom scalar type',
+  name: "Date",
+  description: "Date custom scalar type",
   serialize(value) {
     return value.getTime(); // Convert outgoing Date to integer for JSON
   },
@@ -27,7 +27,8 @@ const resolvers = {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
           .select("-__v -password")
-          .populate("events");
+          .populate("events")
+          .populate("lists");
 
         return userData;
       }
@@ -35,16 +36,23 @@ const resolvers = {
       throw new AuthenticationError("Not logged in");
     },
     users: async () => {
-      return User.find().select("-__v -password");
+      return User.find()
+        .select("-__v -password")
+        .populate("events")
+        .populate("lists");
     },
     user: async (parent, { firstName }) => {
       return User.findOne({ firstName })
         .select("-__v -password")
-        .populate("events");
+        .populate("events")
+        .populate("lists");
     },
-    lists: async (parent, { firstName }) => {
-      const params = firstName ? { firstName } : {};
-      return List.find(params).sort({ createdAt: -1 });
+    // lists: async (parent, { firstName }) => {
+    //   const params = firstName ? { firstName } : {};
+    //   return List.find(params).sort({ createdAt: -1 });
+    // },
+    lists: async () => {
+      return List.find().populate("items").sort({ createdAt: -1 });
     },
     list: async (parent, { _id }) => {
       return List.findOne({ _id });
@@ -138,6 +146,7 @@ const resolvers = {
       if (context.user) {
         const list = await List.create({
           ...args,
+          firstName: context.user.firstName,
         });
         await User.findByIdAndUpdate(
           {

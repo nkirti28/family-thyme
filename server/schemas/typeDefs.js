@@ -8,6 +8,7 @@ const typeDefs = gql`
     firstName: String
     email: String
     events: [Event]
+    lists: [List]
   }
 
   type Event {
@@ -18,7 +19,7 @@ const typeDefs = gql`
     dueDate: Date
   }
 
-  type Lists {
+  type List {
     _id: ID
     listName: String
     createdAt: String
@@ -42,8 +43,8 @@ const typeDefs = gql`
     me: User
     users: [User]
     user(firstName: String!): User
-    lists(firstName: String!): [Lists]
-    list(_id: ID!): Lists
+    lists: [List]
+    list(_id: ID!): List
     items: [Item]
     item(_id: ID!): Item
     events: [Event]
@@ -77,10 +78,10 @@ const typeDefs = gql`
       dueDate: Date!
     ): Event
 
-    addList(listName: String!): Lists
-    removeList(_id: ID!): Lists
-    updateList(_id: ID!, listName: String, createdAt: Date): Lists
-    addItem(listId: ID!, itemDescription: String!, quantity: Int!): Lists
+    addList(listName: String!): List
+    removeList(_id: ID!): List
+    updateList(_id: ID!, listName: String, createdAt: Date): List
+    addItem(listId: ID!, itemDescription: String!, quantity: Int!): List
     removeItem(_id: ID!): Item
   }
 `;

@@ -26,29 +26,36 @@ export const QUERY_ME = gql`
       events {
         _id
         title
-        firstName
         startDate
         dueDate
+      }
+      lists {
+        _id
+        listName
+        createdAt
+        itemsCount
       }
     }
   }
 `;
 
-// export const QUERY_LISTS = gql`
-//   query Lists($firstName: String!) {
-//     lists(firstName: $firstName) {
-//       _id
-//       listName
-//     }
-//   }
-// `;
+export const QUERY_ME_BASIC = gql`
+  {
+    me {
+      _id
+      firstName
+      email
+    }
+  }
+`;
 
 export const QUERY_LISTS = gql`
-  query lists($firstName: String!) {
-    lists(firstName: $firstName) {
+  query lists {
+    lists {
       _id
       listName
       createdAt
+      firstName
       itemsCount
       items {
         _id
@@ -58,6 +65,9 @@ export const QUERY_LISTS = gql`
     }
   }
 `;
+
+
+
 export const QUERY_LIST = gql`
   query list($id: ID!) {
     list(_id: $id) {
