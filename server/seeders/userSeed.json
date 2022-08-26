@@ -2,31 +2,36 @@
   {
     "firstName": "Kirti",
     "email": "kirtis@hotmail.com",
-    "password": "kirti12345",
-    "events": []
+    "password": "kirti123",
+    "events": [],
+    "lists": []
   },
   {
     "firstName": "Trevor",
     "email": "trevor@hotmail.com",
     "password": "trevor123",
-    "events": []
+    "events": [],
+    "lists": []
   },
   {
     "firstName": "John",
     "email": "john1@hotmail.com",
     "password": "john123",
-    "events": []
+    "events": [],
+    "lists": []
   },
   {
     "firstName": "Kyle",
     "email": "kyle1@hotmail.com",
     "password": "kyle123",
-    "events": []
+    "events": [],
+    "lists": []
   },
   {
     "firstName": "Matthew",
     "email": "matt123@hotmail.com",
     "password": "matt1234",
-    "events": []
+    "events": [],
+    "lists": []
   }
 ]

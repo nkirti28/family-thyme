@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 // const List = require("./List")
 
 const userSchema = new Schema({
@@ -15,7 +15,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    match: [/.+@.+\..+/, 'Must match an email address!'],
+    match: [/.+@.+\..+/, "Must match an email address!"],
   },
   password: {
     type: String,
@@ -25,17 +25,20 @@ const userSchema = new Schema({
   events: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Event',
+      ref: "Event",
     },
   ],
-  // calendar: [Calendar.schema]
-  // family: [User.schema]
-  // lists: [List.schema]
+  lists: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "List",
+    },
+  ],
 });
 
 // set up pre-save middleware to create password
-userSchema.pre('save', async function (next) {
-  if (this.isNew || this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (this.isNew || this.isModified("password")) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
@@ -48,6 +51,6 @@ userSchema.methods.isCorrectPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

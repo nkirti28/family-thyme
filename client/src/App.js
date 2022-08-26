@@ -7,6 +7,7 @@ import SignIn from "./pages/SignIn";
 import Calendar from "./pages/Calendar";
 import Navbar from "./components/Navbar/index";
 import List from "./pages/List";
+//import Items from "./pages/Items";
 
 import {
   ApolloClient,
@@ -19,7 +20,7 @@ import { StoreProvider } from "./utils/GlobalState";
 import "./App.css";
 
 const httpLink = createHttpLink({
-  uri: "/graphql",
+  uri: "http://localhost:3001/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -50,6 +51,7 @@ function App() {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/list" element={<List />} />
+              {/* <Route path="/list/:id" element={<Items />} /> */}
             </Routes>
           </StoreProvider>
         </div>

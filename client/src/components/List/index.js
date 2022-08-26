@@ -10,66 +10,60 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
+import ListSubheader from "@mui/material/ListSubheader";
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StarBorder from "@mui/icons-material/StarBorder";
 
 const drawerWidth = 240;
 
-const lists = [
-  {
-    text: "To-Do-List",
-    handleClick: () => {
-      const listName = "To-Do-List";
-      //const ToDoItems = ["Pay bills", "call for appointment", "pickup items"];
-      showItems(listName);
-    },
-  },
-  {
-    text: "Shopping-List",
-    handleClick: () => {
-      //const text = "Shopping-List";
-      const ShoppingItems = ["Back-to-school items", "Cloths", "Watch"];
-      showItems(ShoppingItems);
-    },
-  },
-  {
-    text: "Grocery-List",
-    handleClick: () => {
-      const GroceryItems = ["Milk", "Eggs", "Cereals"];
-      //const GroceryItems = "Milk";
-      showItems(GroceryItems);
-    },
-  },
-];
+const NestedList = ({ lists }) => {
+  const [open, setOpen] = React.useState(true);
 
-const showItems = (listName) => {  
-    return (
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
-        <Typography>To-Do-List</Typography>
-        <List>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <ListOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Pay Bills" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <ListOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Pickup Order" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemIcon>
-              <ListOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Call for appointment" />
-          </ListItem>
-        </List>
-      </Box>
-    );
+  const handleClick = () => {
+    setOpen(!open);
+  };
+  return (
+    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <List
+        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+        component="nav"
+        aria-labelledby="nested-list-subheader"
+        subheader={
+          <ListSubheader component="div" id="nested-list-subheader">
+            List Items
+          </ListSubheader>
+        }
+      >
+        {lists &&
+          lists.map((item) => {
+            return (
+              <ListItem key={item._id} disablePadding>
+                <ListItemButton key={item._id} onClick={handleClick}>
+                  <ListOutlinedIcon />
+                  <ListItemText primary={item.listName} />
+                  {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText primary="Milk" />
+                    </ListItemButton>
+                  </List>
+                </Collapse>
+              </ListItem>
+            );
+          })}
+      </List>
+    </Box>
+  );
 };
 
-const DisplayLists = (items, text) => {
+const DisplayLists = ({ lists }) => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -85,25 +79,28 @@ const DisplayLists = (items, text) => {
         }}
       >
         <Toolbar />
+
         <Box sx={{ overflow: "auto" }}>
           <List>
-            {lists.map((item, index) => {
-              const { text, handleClick } = item;
-              return (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton key={text} onClick={handleClick}>
-                    <ListItemIcon>
-                      <ListOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
+            {lists &&
+              lists.map((item) => {
+                return (
+                  <ListItem key={item._id} disablePadding>
+                    <ListItemButton key={item._id}>
+                      <ListItemIcon>
+                        <ListOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={item.listName} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
           </List>
         </Box>
       </Drawer>
-      {showItems()}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        {NestedList({ lists })}        
+      </Box>
     </Box>
   );
 };

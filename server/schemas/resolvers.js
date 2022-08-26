@@ -1,11 +1,11 @@
-const { User, Event, List, Item } = require('../models');
-const { GraphQLScalarType, Kind } = require('graphql');
-const { AuthenticationError } = require('apollo-server-express');
-const { signToken } = require('../utils/auth');
+const { User, Event, List, Item } = require("../models");
+const { GraphQLScalarType, Kind } = require("graphql");
+const { AuthenticationError } = require("apollo-server-express");
+const { signToken } = require("../utils/auth");
 
 const dateScalar = new GraphQLScalarType({
-  name: 'Date',
-  description: 'Date custom scalar type',
+  name: "Date",
+  description: "Date custom scalar type",
   serialize(value) {
     return value.getTime(); // Convert outgoing Date to integer for JSON
   },
@@ -26,25 +26,33 @@ const resolvers = {
     me: async (parent, args, context) => {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
-          .select('-__v -password')
-          .populate('events');
+          .select("-__v -password")
+          .populate("events")
+          .populate("lists");
 
         return userData;
       }
 
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError("Not logged in");
     },
     users: async () => {
-      return User.find().select('-__v -password');
+      return User.find()
+        .select("-__v -password")
+        .populate("events")
+        .populate("lists");
     },
     user: async (parent, { firstName }) => {
       return User.findOne({ firstName })
-        .select('-__v -password')
-        .populate('events');
+        .select("-__v -password")
+        .populate("events")
+        .populate("lists");
     },
-    lists: async (parent, { username }) => {
-      const params = username ? { username } : {};
-      return List.find(params).sort({ createdAt: -1 });
+    // lists: async (parent, { firstName }) => {
+    //   const params = firstName ? { firstName } : {};
+    //   return List.find(params).sort({ createdAt: -1 });
+    // },
+    lists: async () => {
+      return List.find().populate("items").sort({ createdAt: -1 });
     },
     list: async (parent, { _id }) => {
       return List.findOne({ _id });
@@ -55,7 +63,7 @@ const resolvers = {
     },
     event: async (parent, { _id }) => {
       return Event.findOne({ _id });
-    }
+    },
   },
   Mutation: {
     addUser: async (parent, args) => {
@@ -72,20 +80,20 @@ const resolvers = {
         });
       }
 
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError("Not logged in");
     },
 
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError('Incorrect credentials');
+        throw new AuthenticationError("Incorrect credentials");
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError('Incorrect credentials');
+        throw new AuthenticationError("Incorrect credentials");
       }
 
       const token = signToken(user);
@@ -108,7 +116,7 @@ const resolvers = {
         return event;
       }
 
-      throw new AuthenticationError('You need to be logged in!');
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     deleteEvent: async (parent, { _id }, context) => {
@@ -118,9 +126,9 @@ const resolvers = {
         if (event) {
           return await Event.findOneAndDelete({ _id });
         }
-        throw new AuthenticationError('No Event with that Id was found!');
+        throw new AuthenticationError("No Event with that Id was found!");
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     updateEvent: async (parent, args, context) => {
@@ -130,7 +138,7 @@ const resolvers = {
           new: true,
         });
       }
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError("Not logged in");
     },
 
     // add new list with listName,createdAt with logged in user
@@ -138,6 +146,7 @@ const resolvers = {
       if (context.user) {
         const list = await List.create({
           ...args,
+          firstName: context.user.firstName,
         });
         await User.findByIdAndUpdate(
           {
@@ -152,7 +161,7 @@ const resolvers = {
         return list;
       }
 
-      throw new AuthenticationError('You need to be logged in!');
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     // remove list with listName,createdAt with logged in user
@@ -163,9 +172,9 @@ const resolvers = {
         if (list) {
           return await List.findOneAndDelete({ _id });
         }
-        throw new AuthenticationError('No List with that Id was found!');
+        throw new AuthenticationError("No List with that Id was found!");
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     // update list with listName,createdAt with logged in user
@@ -176,7 +185,7 @@ const resolvers = {
           new: true,
         });
       }
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError("Not logged in");
     },
     // add Item to the list with itemDescription , itemCount with logged in user
     addItem: async (parent, { listId, itemDescription, quantity }, context) => {
@@ -194,7 +203,7 @@ const resolvers = {
         return updatedList;
       }
 
-      throw new AuthenticationError('You need to be logged in!');
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     // remove Item  with itemDescription , itemCount
@@ -204,9 +213,9 @@ const resolvers = {
         if (item) {
           return await Item.findOneAndDelete({ _id });
         }
-        throw new AuthenticationError('No Item with that Id was found!');
+        throw new AuthenticationError("No Item with that Id was found!");
       }
-      throw new AuthenticationError('You need to be logged in!');
+      throw new AuthenticationError("You need to be logged in!");
     },
   },
 };
